@@ -3,6 +3,23 @@ data = readtable('C:\Users\giord\OneDrive\Desktop\UNI\MAGISTRALE\Intelligent Sys
 
 col = 2;
 
+% Assuming each column is a variable you want to analyze with CWT
+
+% Extract the column data. This method works if the data are numeric.
+columnData = table2array(data(:, col));
+
+% Perform the Continuous Wavelet Transform on the column data
+[cfs, frequencies] = cwt(columnData, 'bump'); % Example uses the Morlet (analytic Morlet) wavelet
+
+% Plot the CWT result for this column
+figure; % Open a new figure window
+imagesc(abs(cfs));  % Visualize the absolute value of the CWT coefficients
+colorbar;  % Show a color bar indicating the coefficient magnitudes
+title(['CWT of Column ', num2str(col)]);
+xlabel('Time');
+ylabel('Scale');
+axis tight; % Fit the axes tightly around the data
+
 
 % Extract unique activity labels from the 5th column
 activity_labels = unique(data{:, 5});
@@ -29,3 +46,4 @@ for activity_label_index = 1:numel(activity_labels)
     axis tight; % Fit the axes tightly around the data
 
 end
+
