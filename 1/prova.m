@@ -21,6 +21,9 @@ axis_descriptions = {
     'Z';
 };
 
+% Create a folder to save the plots
+folder_path = 'C:\Users\giord\OneDrive\Desktop\UNI\MAGISTRALE\Intelligent Systems For Pattern Recognition\Assignments\PatternRecognition\1\plots\';
+
 % Assuming each column is a variable you want to analyze with CWT
 
 % Extract the column data. This method works if the data are numeric.
@@ -38,6 +41,8 @@ xlabel('Time');
 ylabel('Scale');
 axis tight; % Fit the axes tightly around the data
 
+% Save the plot
+saveas(gcf, fullfile(folder_path, ['Complete_CWT_', axis_descriptions{col}, '_axis.png']));
 
 % Extract unique activity labels from the 5th column
 activity_labels = unique(data{:, 5});
@@ -62,6 +67,7 @@ for activity_label_index = 1:numel(activity_labels)
     xlabel('Time');
     ylabel('Scale');
     axis tight; % Fit the axes tightly around the data
-
+    
+    % Save the plot
+    saveas(gcf, fullfile(folder_path, ['CWT_', axis_descriptions{col}, '_axis_Activity_', num2str(activity_label_index), '.png']));
 end
-
