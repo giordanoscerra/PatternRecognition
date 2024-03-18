@@ -1,6 +1,7 @@
-baseFolder = 'C:\Users\giord\OneDrive\Desktop\UNI\MAGISTRALE\Intelligent Systems For Pattern Recognition\Assignments\PatternRecognition\';
-dataFolder = fullfile(baseFolder, '1\data\');
-plotsBaseFolder = fullfile(baseFolder, '1\plots\');
+% Define relative paths
+dataFolder = fullfile('data');
+plotsBaseFolder = fullfile('plots');
+
 
 % Define activity and axis descriptions
 activity_descriptions = {
