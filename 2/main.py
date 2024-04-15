@@ -1,59 +1,263 @@
 import numpy as np
 
+# Define the Node of a Bayesian Network
 class Node:
-    def __init__(self, name, parents=None):
+    def __init__(self, name, parents=None, probabilities=None, order=None, values= None):
+        # name: name of the node
         self.name = name
-        self.parents = parents if parents else []
-        self.probabilities = {}
+        # parents: list of the parents of the node
+        self.parents = parents if parents else None
+        # probabilities: conditional probability table of the node
+        self.probabilities = probabilities
+        # order: level of the node in the network. The root node has order 0, leaf nodes have the highest order.
+        self.order = order
+        # values: possible values of the node
+        self.values = values
 
-    def add_probability(self, values, probability):
-        self.probabilities[tuple(values)] = probability
-
-    def get_probability(self, values):
-        return self.probabilities.get(tuple(values), 0.0)
-
+# Define the Bayesian Network
 class BayesianNetwork:
     def __init__(self):
-        self.nodes = {}
+        # nodes: list of nodes in the network
+        self.nodes = []
 
+    # Add a node to the network
     def add_node(self, node):
-        self.nodes[node.name] = node
+        self.nodes.append(node)
+        # Update the order of the nodes. Topology and causal ordering are preserved.
+        self.nodes.sort(key=lambda x: x.order)
 
+    # Get a node by name
     def get_node(self, name):
         return self.nodes.get(name)
+    
+    # Print the nodes of the network
+    def print_nodes(self):
+        for node in self.nodes:
+            print('name: ', node.name)
+            if(not node.parents):
+                print('root node')
+                print('CPT: ',(node.probabilities))
+            else:
+                print('parents: ', node.parents)
+                print('CPT:')
+                for key in node.probabilities:
+                    print((key))
+            print('level: ',node.order)
+            
+    
+    # Generate a sample from the network
+    def ancestral_sample(self):
+        # Initialize an empty sample
+        sample = {}
+        # Initialize the probability of the sample
+        probability = 1
+        # Iterate over the nodes in the network
+        for node in self.nodes:
+            # If the node is a root node
+            if not node.parents:
+                # Sample from the node: choose a value from the possible values of the node according to the CPT of the node
+                sample[node.name] = np.random.choice(node.values, p=list(node.probabilities.values()))
+            # If the node is not a root node
+            else:
+                # Get the values of the parents of the node. The values are already in the sample because of the causal ordering of the nodes.
+                parent_values = [sample[parent] for parent in node.parents]
+                # Create a list of cases to consider in the CPT of the node
+                cases = []
+                # Iterate over the possible values of the node
+                for val in node.values:
+                    # Add the case to the list of cases, which is a tuple of the values of the parents and the value of the node
+                    cases.append(tuple(parent_values + [val]))
+                # Flag to check if the correct case is found
+                found = False
+                # Iterate over the cases in the CPT of the node
+                for case in cases:
+                    # If the correct case is found
+                    for cpt_entry in node.probabilities:
+                      # Correct case
+                      if case in list(cpt_entry.keys()):
+                        # Sample from the node: choose a value from the possible values of the node according to the CPT of the node
+                        sample[node.name] = np.random.choice(node.values, p=list(cpt_entry.values()))
+                        # Retrieve the probability of the sample from the CPT of the node
+                        output = tuple(parent_values + [sample[node.name]])
+                        output_value = cpt_entry[output]
+                        # Update the probability of the sample
+                        probability *= output_value
+                        # Set the flag to True
+                        found = True
+                    # If the correct case is found, break the loop
+                    if found:
+                        break
 
-    def calculate_probability(self, node_name, node_value, evidence):
-        node = self.get_node(node_name)
-        if not node:
-            return 0.0
+        return sample, probability
 
-        parents = [self.get_node(parent_name) for parent_name in node.parents]
-        parent_values = [evidence[parent_name] for parent_name in node.parents]
-
-        probability = node.get_probability([node_value] + parent_values)
-        parent_probabilities = [self.calculate_probability(parent.name, parent_value, evidence) for parent, parent_value in zip(parents, parent_values)]
-
-        return probability * np.prod(parent_probabilities)
-
-# Example usage
+# Initialize the network
 network = BayesianNetwork()
 
-# Define nodes
-flower_tree = Node("flower_tree")
-branch = Node("branch", parents=["flower_tree"])
-flower = Node("flower", parents=["branch"])
-fruit = Node("fruit", parents=["flower"])
-seed = Node("seed", parents=["fruit"])
-ground = seed = Node("ground", parents=["flower"])
-mount = Node("mount", parents=["ground"])
-forest = Node("forest", parents=["mount"])
-wood_tree = Node("wood_tree", parents=["seed", "forest"])
-wood = Node("wood", parents=["wood_tree"])
-table = Node("table", parents=["wood"])
+###################################################
+#########    DEFINITION OF ENDRIGONET     #########                    
+###################################################
 
+# cherry_tree is the root node. It has two possible values: Young and Old. Each value has the same probability.
+cherry_tree = Node(name="cherry_tree", 
+                   probabilities={
+                       'Young': 0.5,
+                       'Old': 0.5
+                   }, order = 0,
+                   values = ['Young', 'Old']
+                )
+# branch is a child of cherry_tree. It has two possible values: Strong and Weak.
+# The probability of the branch being Strong is 0.7 if the cherry_tree is Young. This seems reasonable because young trees are usually stronger.
+# The probability of the branch being Strong is 0.2 if the cherry_tree is Old. This seems reasonable because old trees are usually weaker.
+branch = Node(name="branch",
+              parents=["cherry_tree"],
+              probabilities=[{
+                  ('Young', 'Strong'): 0.7,
+                  ('Young', 'Weak'): 0.3
+              },
+                  {
+                      ('Old', 'Strong'): 0.2,
+                      ('Old', 'Weak'): 0.8
+                  }], order=1,
+              values=['Strong', 'Weak']
+            )
+# flower is a child of branch. It has two possible values: Beautiful and Ugly.
+# The probability of the flower being Beautiful is 0.9 if the branch is Strong. This seems reasonable because strong branches are usually healthier.
+# The probability of the flower being Beautiful is 0.3 if the branch is Weak. This seems reasonable because weak branches are usually less healthy, but we can still have some beautiful flowers.
+flower = Node(name="flower",
+              parents=["branch"],
+              probabilities=[{
+                  ('Strong', 'Beautiful'): 0.9,
+                  ('Strong', 'Ugly'): 0.1
+              }, {
+                  ('Weak', 'Beautiful'): 0.3,
+                  ('Weak', 'Ugly'): 0.7
+              }], order=2,
+              values=['Beautiful', 'Ugly'])
+# fruit is a child of flower. It has two possible values: Ripe and Unripe.
+# The probability of the fruit being Ripe is 0.1 if the flower is Beautiful. This seems reasonable because beautiful flowers are usually healthier. Endrigo would agree with this, as he agrees that bad things can't grow from good things.
+# The probability of the fruit being Ripe is 0.4 if the flower is Ugly. This seems reasonable because ugly flowers are usually less healthy. But we are still on the good side, as we're optimistic that good things can grow from bad things.
+fruit = Node(name="fruit",
+             parents=["flower"],
+             probabilities=[{
+                 ('Beautiful', 'Ripe'): 0.1,
+                 ('Beautiful', 'Unripe'): 0.9
+             }, {
+                 ('Ugly', 'Ripe'): 0.4,
+                 ('Ugly', 'Unripe'): 0.6
+             }],order=3,
+             values=['Ripe', 'Unripe'])
+# seed is a child of fruit. It has two possible values: Fertile and Infertile.
+# The probability of the seed being Infertile is 0.7 if the fruit is Ripe. This seems reasonable because ripe fruits usually have infertile seeds.
+# The probability of the seed being Fertile is 0.8 if the fruit is Unripe. This seems reasonable because unripe fruits usually have fertile seeds.
+seed = Node(name="seed",
+            parents=["fruit"],
+            probabilities=[{
+                ('Ripe', 'Fertile'): 0.3,
+                ('Ripe', 'Infertile'): 0.7
+            }, {
+                ('Unripe', 'Fertile'): 0.8,
+                ('Unripe', 'Infertile'): 0.2
+            }],order=4,
+            values=['Fertile', 'Infertile'])
+# ground is a child of flower. It has two possible values: Fertile and Infertile.
+# The probability of the ground being Fertile is 0.8 if the flower is Beautiful. This seems reasonable because beautiful flowers usually grow in fertile ground. And also Endrigo seems quite sure about this one.
+# The probability of the ground being Fertile is 0.4 if the flower is Ugly. This seems reasonable because ugly flowers usually grow in infertile ground. But we are still on the good side, as we're optimistic that good things can grow from "bad" things.
+ground = Node(name="ground",
+                     parents=["flower"],
+                     probabilities=[{
+                         ('Beautiful', 'Fertile'): 0.8,
+                         ('Beautiful', 'Infertile'): 0.2
+                     }, {
+                         ('Ugly', 'Fertile'): 0.6,
+                         ('Ugly', 'Infertile'): 0.4
+                     }],order=3,
+                     values=['Fertile', 'Infertile'])
+# mount is a child of ground. It has three possible values: Wooded, Arid, and Artificial.
+# Here there's a twist. If we have fertile ground, we have a higher probability of having a wooded mount. 
+# But if we have infertile ground, we have a higher probability of having an artificial mount. We don't want our table industry to fail!
+# Arid mounts are not very common, but they can still happen. We have a small probability of having an arid mount, regardless of the fertility of the ground. This is for when we've given up on the table industry.
+mount = Node(name="mount",
+             parents=["ground"],
+             probabilities=[{
+                 ('Fertile', 'Wooded'): 0.8,
+                 ('Fertile', 'Arid'): 0.05,
+                 ('Fertile', 'Artificial'): 0.15
+             }, {
+                 ('Infertile', 'Wooded'): 0.15,
+                 ('Infertile', 'Arid'): 0.05,
+                 ('Infertile', 'Artificial'): 0.8
+             }],order=4,
+             values=['Wooded', 'Arid', 'Artificial'])
+# forest is a child of mount. It has two possible values: Thick and Sparse.
+# With wooded mounts we have a higher probability of having a thick forest. 
+# With artificial mounts we have a slightly higher probability of having a sparse forest. 
+# With arid mounts, we almost surely have a sparse forest. Remember here we've sadly given up on the table industry.
+forest = Node(name="forest",
+              parents=["mount"],
+              probabilities=[{
+                  ('Wooded', 'Thick'): 0.8,
+                  ('Wooded', 'Sparse'): 0.2
+              }, {
+                  ('Arid', 'Thick'): 0.1,
+                  ('Arid', 'Sparse'): 0.9
+              }, {
+                  ('Artificial', 'Thick'): 0.7,
+                  ('Artificial', 'Sparse'): 0.3
+                  }],order=5,
+              values=['Thick', 'Sparse'])
+# pine_tree is a child of seed and forest. It has two possible values: Healthy and Sick.
+# We probably have a healthy pine tree if we have fertile seeds.
+# Sparseness of the forest has a slightly lower impact on the health of the pine tree. 
+pine_tree = Node(name="pine_tree",
+                 parents=["seed", "forest"],
+                 probabilities=[
+                     {('Fertile', 'Thick', 'Healthy'): 0.8,
+                      ('Fertile', 'Thick', 'Sick'): 0.2},
+                     
+                     {('Fertile', 'Sparse', 'Healthy'): 0.7,
+                      ('Fertile', 'Sparse', 'Sick'): 0.3},
+                     
+                     {('Infertile', 'Thick', 'Healthy'): 0.5,
+                      ('Infertile', 'Thick', 'Sick'): 0.5},
+                     
+                     {('Infertile', 'Sparse', 'Healthy'): 0.2,
+                      ('Infertile', 'Sparse', 'Sick'): 0.8}
+                 ],order=6,
+                 values=['Healthy', 'Sick'])
+# wood is a child of pine_tree. It has two possible values: Strong and Weak.
+# We probably have strong wood if we have a healthy pine tree.
+wood = Node(name="wood",
+            parents=["pine_tree"],
+            probabilities=[{
+                ('Healthy', 'Strong'): 0.8,
+                ('Healthy', 'Weak'): 0.2
+            }, {
+                ('Sick', 'Strong'): 0.15,
+                ('Sick', 'Weak'): 0.85
+            }],order=7,
+            values=['Strong', 'Weak'])
+# table is a child of wood. It has three possible values: Long Lasting, Fragile, and Broken.
+# We probably have a long-lasting table if we have strong wood. There are still chances of having a fragile or broken table, but they are very low.
+# We probably have a fragile table if we have weak wood. There are still chances of having a long-lasting table, but they are very low. More likely, we have a broken table.
+table = Node(name="table",
+             parents=["wood"],
+             probabilities=[{
+                 ('Strong', 'Long Lasting'): 0.7,
+                 ('Strong', 'Fragile'): 0.18,
+                 ('Strong', 'Broken'): 0.12
+             }, {
+                 ('Weak', 'Long Lasting'): 0.1,
+                 ('Weak', 'Fragile'): 0.6,
+                 ('Weak', 'Broken'): 0.3
+             }],order=8,
+             values=['Long Lasting', 'Fragile', 'Broken'])
 
-# Add nodes to the network
-network.add_node(flower_tree)
+###################################################
+#########       NETWORK COMPILATION       #########                    
+###################################################
+
+# Add nodes to the network in whatever order (topology and causal ordering are preserved)
+network.add_node(cherry_tree)
 network.add_node(branch)
 network.add_node(flower)
 network.add_node(fruit)
@@ -61,187 +265,27 @@ network.add_node(seed)
 network.add_node(ground)
 network.add_node(mount)
 network.add_node(forest)
-network.add_node(wood_tree)
+network.add_node(pine_tree)
 network.add_node(wood)
 network.add_node(table)
 
-def flower_tree_probability(flower_tree):
-    # flower tree's age
-    return np.random.normal(10, 2)
+#network.print_nodes()
 
-def branch_probability(branch, flower_tree):
-    # if the flower tree is old enough, it will have more branches
-    if flower_tree >= 10:
-        return np.random.normal(8, 1)
-    # if the flower tree is too young, it will have less branches
-    else:
-        return np.random.normal(2, 1)
-    
-def flower_probability(flower, branch):
-    # if the branch is big, it will have more flowers
-    if branch >= 5:
-        return np.random.normal(20, 2)
-    # if the branch is small, it will have less flowers
-    else:
-        return np.random.normal(5, 1)
-    
-def fruit_probability(fruit, flower):
-    # if there are many flowers, there'll be more fruits
-    if flower >= 10:
-        return np.random.normal(15, 2)
-    # if the flowers are few, there'll be less fruits
-    else:
-        return np.random.normal(5, 1)
+# Generate 10 samples from the network
+stats = []
+for i in range(10):
+    # Generate a sample from the network
+    sample, probability = network.ancestral_sample()
+    # Print the sample
+    print('Sample number',i+1,': ')
+    for key in sample:
+        print(key,': ',sample[key])
+    # Print the probability of the sample
+    print('Sample probability: ',probability) 
+    print("\n")
+    stats.append(probability)
 
-def seed_probability(seed, fruit):
-    # if there are many fruits, there'll be more seeds
-    if fruit >= 10:
-        return np.random.normal(20, 2)
-    # if the fruits are few, there'll be less seeds
-    else:
-        return np.random.normal(5, 1)
+# Calculate the mean and standard deviation of the joint probability of the samples
+stats = np.array(stats)
+print('Mean and STD of joint probability: ', stats.mean(), stats.std())
 
-def ground_probability(ground, flower):
-    # if there are many flowers, there'll be more ground    
-    if flower >= 10:
-        return np.random.normal(20, 2)
-    # if the flowers are few, there'll be less ground
-    else:
-        return np.random.normal(5, 1)
-    
-def mount_probability(mount, ground):
-    # if there is a lot of ground, there'll be more mounts
-    if ground >= 10:
-        return np.random.normal(20, 2)
-    # if the ground is scarce, there'll be less mounts
-    else:
-        return np.random.normal(5, 1)
-    
-def forest_probability(forest, mount):
-    # if there are many mounts, there'll be more forests
-    if mount >= 10:
-        return np.random.normal(20, 2)
-    # if the mounts are few, there'll be less forests
-    else:
-        return np.random.normal(5, 1)
-    
-def wood_tree_probability(wood_tree, seed, forest):
-    # if there are many seeds and forests, there'll be more wood trees
-    if seed >= 10 and forest >= 10:
-        return np.random.normal(20, 2)
-    # if the seeds or forests are few, there'll be less wood trees
-    else:
-        return np.random.normal(5, 1)
-    
-def wood_probability(wood, wood_tree):
-    # if there are many wood trees, there'll be more wood
-    if wood_tree >= 10:
-        return np.random.normal(20, 2)
-    # if the wood trees are few, there'll be less wood
-    else:
-        return np.random.normal(5, 1)
-    
-def table_probability(table, wood):
-    # if there is a lot of wood, there'll be more tables
-    if wood >= 10:
-        return np.random.normal(20, 2)
-    # if the wood is scarce, there'll be less tables
-    else:
-        return np.random.normal(5, 1)
-
-
-'''
-import numpy as np
-
-def flower_tree_probability(flower_tree):
-    # Flower tree's age categories: Young (0) and Old (1)
-    age_category = 1 if flower_tree >= 10 else 0
-    # Define probabilities for each age category
-    probabilities = [0.1, 0.9]  # Probability of being young or old
-    # Sample from multinomial distribution based on age category
-    return np.random.multinomial(1, probabilities).argmax()
-
-def branch_probability(branch, flower_tree):
-    # Define branch categories: Small (0) and Big (1)
-    if flower_tree == 0:
-        return np.random.normal(2, 1)
-    else:
-        size_category = 1 if branch >= 5 else 0
-        # Define probabilities for each branch size category
-        probabilities = [0.2, 0.8]  # Probability of being small or big
-        # Sample from multinomial distribution based on branch size category
-        return np.random.multinomial(1, probabilities).argmax()
-
-def flower_probability(flower, branch):
-    # Define flower categories: Few (0) and Many (1)
-    size_category = 1 if branch >= 5 else 0
-    # Define probabilities for each flower size category
-    probabilities = [0.2, 0.8]  # Probability of few or many flowers
-    # Sample from multinomial distribution based on flower size category
-    return np.random.multinomial(1, probabilities).argmax()
-
-def fruit_probability(fruit, flower):
-    # Define fruit categories: Few (0) and Many (1)
-    size_category = 1 if flower >= 10 else 0
-    # Define probabilities for each fruit size category
-    probabilities = [0.2, 0.8]  # Probability of few or many fruits
-    # Sample from multinomial distribution based on fruit size category
-    return np.random.multinomial(1, probabilities).argmax()
-
-def seed_probability(seed, fruit):
-    # Define seed categories: Few (0) and Many (1)
-    size_category = 1 if fruit >= 10 else 0
-    # Define probabilities for each seed size category
-    probabilities = [0.2, 0.8]  # Probability of few or many seeds
-    # Sample from multinomial distribution based on seed size category
-    return np.random.multinomial(1, probabilities).argmax()
-
-def ground_probability(ground, flower):
-    # Define ground categories: Little (0) and Much (1)
-    size_category = 1 if flower >= 10 else 0
-    # Define probabilities for each ground size category
-    probabilities = [0.2, 0.8]  # Probability of little or much ground
-    # Sample from multinomial distribution based on ground size category
-    return np.random.multinomial(1, probabilities).argmax()
-
-def mount_probability(mount, ground):
-    # Define mount categories: Few (0) and Many (1)
-    size_category = 1 if ground >= 10 else 0
-    # Define probabilities for each mount size category
-    probabilities = [0.2, 0.8]  # Probability of few or many mounts
-    # Sample from multinomial distribution based on mount size category
-    return np.random.multinomial(1, probabilities).argmax()
-
-def forest_probability(forest, mount):
-    # Define forest categories: Few (0) and Many (1)
-    size_category = 1 if mount >= 10 else 0
-    # Define probabilities for each forest size category
-    probabilities = [0.2, 0.8]  # Probability of few or many forests
-    # Sample from multinomial distribution based on forest size category
-    return np.random.multinomial(1, probabilities).argmax()
-
-def wood_tree_probability(wood_tree, seed, forest):
-    # Define wood tree categories: Few (0) and Many (1)
-    size_category = 1 if seed >= 10 and forest >= 10 else 0
-    # Define probabilities for each wood tree size category
-    probabilities = [0.2, 0.8]  # Probability of few or many wood trees
-    # Sample from multinomial distribution based on wood tree size category
-    return np.random.multinomial(1, probabilities).argmax()
-
-def wood_probability(wood, wood_tree):
-    # Define wood categories: Little (0) and Much (1)
-    size_category = 1 if wood_tree >= 10 else 0
-    # Define probabilities for each wood size category
-    probabilities = [0.2, 0.8]  # Probability of little or much wood
-    # Sample from multinomial distribution based on wood size category
-    return np.random.multinomial(1, probabilities).argmax()
-
-def table_probability(table, wood):
-    # Define table categories: Few (0) and Many (1)
-    size_category = 1 if wood >= 10 else 0
-    # Define probabilities for each table size category
-    probabilities = [0.2, 0.8]  # Probability of few or many tables
-    # Sample from multinomial distribution based on table size category
-    return np.random.multinomial(1, probabilities).argmax()
-
-'''
