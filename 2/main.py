@@ -36,13 +36,13 @@ class BayesianNetwork:
             print('name: ', node.name)
             if(not node.parents):
                 print('root node')
-                print('CPT: ',(node.probabilities))
+                print('CPT: ',(node.probabilities), '\n')
             else:
                 print('parents: ', node.parents)
                 print('CPT:')
                 for key in node.probabilities:
                     print((key))
-            print('level: ',node.order)
+                print('level: ',node.order, '\n')
             
     
     # Generate a sample from the network
@@ -89,6 +89,26 @@ class BayesianNetwork:
                         break
 
         return sample, probability
+    
+    # Generate n samples from the network and calculate the mean and standard deviation of the joint probability of the samples
+    def run_ancestral_sampling(self, n_samples=10):
+        # Generate 10 samples from the network
+        stats = []
+        for i in range(n_samples):
+            # Generate a sample from the network
+            sample, probability = network.ancestral_sample()
+            # Print the sample
+            print('Sample number',i+1,': ')
+            for key in sample:
+                print(key,': ',sample[key])
+            # Print the probability of the sample
+            print('Sample probability: ',probability) 
+            print("\n")
+            stats.append(probability)
+
+        # Calculate the mean and standard deviation of the joint probability of the samples
+        stats = np.array(stats)
+        print('Mean and STD of joint probability: ', stats.mean(), stats.std())
 
 # Initialize the network
 network = BayesianNetwork()
@@ -269,23 +289,9 @@ network.add_node(pine_tree)
 network.add_node(wood)
 network.add_node(table)
 
-#network.print_nodes()
+# Uncomment to print the nodes of the network
+# network.print_nodes()
 
-# Generate 10 samples from the network
-stats = []
-for i in range(10):
-    # Generate a sample from the network
-    sample, probability = network.ancestral_sample()
-    # Print the sample
-    print('Sample number',i+1,': ')
-    for key in sample:
-        print(key,': ',sample[key])
-    # Print the probability of the sample
-    print('Sample probability: ',probability) 
-    print("\n")
-    stats.append(probability)
-
-# Calculate the mean and standard deviation of the joint probability of the samples
-stats = np.array(stats)
-print('Mean and STD of joint probability: ', stats.mean(), stats.std())
+# Generate 100 samples from the network and calculate the mean and standard deviation of the joint probability of the samples
+network.run_ancestral_sampling(n_samples=100)
 
