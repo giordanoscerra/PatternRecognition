@@ -111,7 +111,7 @@ class BayesianNetwork:
         print('Mean of joint probabilities: ', stats.mean())
 
 ###################################################
-#########    DEFINITION OF ENDRIGONET     #########                    
+#########    DEFINITION OF ENDRIGONET     #########   # https://drive.google.com/uc?export=view&id=12n3DwmyoXwdLATAON6pgLfNNaC-_7DfX # EndrigoNet               
 ###################################################
 
 # cherry_tree is the root node. It has two possible values: Young and Old. Each value has the same probability.
@@ -296,8 +296,9 @@ EndrigoNet.add_node(table)
 EndrigoNet.run_ancestral_sampling(n_samples=100)
 
 ###################################################
-#########  DEFINITION OF BEATLESCRASHNET  #########                    
+#########  DEFINITION OF BEATLESCRASHNET  #########   # https://drive.google.com/uc?export=view&id=1KYKPoh65BIblZlZ7u-rgaRoMA6yV7Hx3 # BeatlesCrashNet
 ###################################################
+
 
 
 producer_death = Node(name="producer_death",
@@ -368,5 +369,4 @@ BeatlesCrashNet.add_node(beatles_breakup)
 BeatlesCrashNet.run_ancestral_sampling(n_samples=3)
 
 
-# https://drive.google.com/uc?export=view&id=1KYKPoh65BIblZlZ7u-rgaRoMA6yV7Hx3 # BeatlesCrashNet
-# https://drive.google.com/uc?export=view&id=12n3DwmyoXwdLATAON6pgLfNNaC-_7DfX # EndrigoNet
+
