@@ -366,3 +366,7 @@ BeatlesCrashNet.add_node(lennon_heroin_use)
 BeatlesCrashNet.add_node(beatles_breakup)
 
 BeatlesCrashNet.run_ancestral_sampling(n_samples=3)
+
+
+# https://drive.google.com/uc?export=view&id=1KYKPoh65BIblZlZ7u-rgaRoMA6yV7Hx3 # BeatlesCrashNet
+# https://drive.google.com/uc?export=view&id=12n3DwmyoXwdLATAON6pgLfNNaC-_7DfX # EndrigoNet
