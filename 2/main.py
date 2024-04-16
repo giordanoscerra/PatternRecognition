@@ -96,7 +96,7 @@ class BayesianNetwork:
         stats = []
         for i in range(n_samples):
             # Generate a sample from the network
-            sample, probability = network.ancestral_sample()
+            sample, probability = self.ancestral_sample()
             # Print the sample
             print('Sample number',i+1,': ')
             for key in sample:
@@ -106,12 +106,9 @@ class BayesianNetwork:
             print("\n")
             stats.append(probability)
 
-        # Calculate the mean and standard deviation of the joint probability of the samples
+        # Calculate the mean of the joint probabilities of the samples
         stats = np.array(stats)
-        print('Mean and STD of joint probability: ', stats.mean(), stats.std())
-
-# Initialize the network
-network = BayesianNetwork()
+        print('Mean of joint probabilities: ', stats.mean())
 
 ###################################################
 #########    DEFINITION OF ENDRIGONET     #########                    
@@ -252,8 +249,8 @@ wood = Node(name="wood",
                 ('Healthy', 'Strong'): 0.8,
                 ('Healthy', 'Weak'): 0.2
             }, {
-                ('Sick', 'Strong'): 0.15,
-                ('Sick', 'Weak'): 0.85
+                ('Sick', 'Strong'): 0.2,
+                ('Sick', 'Weak'): 0.8
             }],order=7,
             values=['Strong', 'Weak'])
 # table is a child of wood. It has three possible values: Long Lasting, Fragile, and Broken.
@@ -276,22 +273,96 @@ table = Node(name="table",
 #########       NETWORK COMPILATION       #########                    
 ###################################################
 
+# Initialize the network
+EndrigoNet = BayesianNetwork()
+
 # Add nodes to the network in whatever order (topology and causal ordering are preserved)
-network.add_node(cherry_tree)
-network.add_node(branch)
-network.add_node(flower)
-network.add_node(fruit)
-network.add_node(seed)
-network.add_node(ground)
-network.add_node(mount)
-network.add_node(forest)
-network.add_node(pine_tree)
-network.add_node(wood)
-network.add_node(table)
+EndrigoNet.add_node(cherry_tree)
+EndrigoNet.add_node(branch)
+EndrigoNet.add_node(flower)
+EndrigoNet.add_node(fruit)
+EndrigoNet.add_node(seed)
+EndrigoNet.add_node(ground)
+EndrigoNet.add_node(mount)
+EndrigoNet.add_node(forest)
+EndrigoNet.add_node(pine_tree)
+EndrigoNet.add_node(wood)
+EndrigoNet.add_node(table)
 
 # Uncomment to print the nodes of the network
 # network.print_nodes()
 
 # Generate 100 samples from the network and calculate the mean and standard deviation of the joint probability of the samples
-network.run_ancestral_sampling(n_samples=100)
+EndrigoNet.run_ancestral_sampling(n_samples=100)
 
+###################################################
+#########  DEFINITION OF BEATLESCRASHNET  #########                    
+###################################################
+
+
+producer_death = Node(name="producer_death",
+                        probabilities={
+                            'Yes': 0.5,
+                            'No': 0.5
+                        }, order=0,
+                        values=['Yes', 'No']
+                        )
+meeting_of_yoko = Node(name="meeting_of_yoko",
+                       probabilities={
+                            'Yes': 0.5,
+                            'No': 0.5
+                          }, order=0,
+                            values=['Yes', 'No']
+                        )
+
+internal_pressure_economic_problems = Node(name="internal_pressure_economic_problems",
+                                           parents=["producer_death"],
+                                             probabilities=[{
+                                                  ('Yes', 'Yes'): 0.6,
+                                                  ('Yes', 'No'): 0.4
+                                             }, {
+                                                  ('No', 'Yes'): 0.1,
+                                                  ('No', 'No'): 0.9
+                                             }], order=1,
+                                                values=['Yes', 'No']
+                                            )
+
+lennon_heroin_use = Node(name="lennon_heroin_use",
+                            parents=["meeting_of_yoko"],
+                            probabilities=[{
+                                ('Yes', 'Yes'): 0.6,
+                                ('Yes', 'No'): 0.4
+                            }, {
+                                ('No', 'Yes'): 0.1,
+                                ('No', 'No'): 0.9
+                            }], order=1,
+                            values=['Yes', 'No']
+                            )
+
+beatles_breakup = Node(name="beatles_breakup",
+                        parents=["internal_pressure_economic_problems", "lennon_heroin_use"],
+                        probabilities=[
+                            {('Yes', 'Yes', 'Yes'): 0.9,
+                            ('Yes', 'Yes', 'No'): 0.1},
+                            
+                            {('Yes', 'No', 'Yes'): 0.7,
+                            ('Yes', 'No', 'No'): 0.3},
+                            
+                            {('No', 'Yes', 'Yes'): 0.4,
+                            ('No', 'Yes', 'No'): 0.6},
+                            
+                            {('No', 'No', 'Yes'): 0.1,
+                            ('No', 'No', 'No'): 0.9}
+                        ], order=2,
+                        values=['Yes', 'No']
+                        )
+
+BeatlesCrashNet = BayesianNetwork()
+
+BeatlesCrashNet.add_node(producer_death)
+BeatlesCrashNet.add_node(meeting_of_yoko)
+BeatlesCrashNet.add_node(internal_pressure_economic_problems)
+BeatlesCrashNet.add_node(lennon_heroin_use)
+BeatlesCrashNet.add_node(beatles_breakup)
+
+BeatlesCrashNet.run_ancestral_sampling(n_samples=3)
