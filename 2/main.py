@@ -94,6 +94,7 @@ class BayesianNetwork:
     def run_ancestral_sampling(self, n_samples=10):
         # Generate 10 samples from the network
         stats = []
+        last_node = self.nodes[-1]
         for i in range(n_samples):
             # Generate a sample from the network
             sample, probability = self.ancestral_sample()
@@ -104,11 +105,13 @@ class BayesianNetwork:
             # Print the probability of the sample
             print('Sample probability: ',probability) 
             print("\n")
-            stats.append(probability)
+            stats.append(sample[last_node.name])
 
         # Calculate the mean of the joint probabilities of the samples
         stats = np.array(stats)
-        print('Mean of joint probabilities: ', stats.mean())
+        for val in last_node.values:
+            print('Mean probability for node ->',last_node.name,'| to assume value ->',val,': ', (stats == val).mean())
+        
 
 ###################################################
 #########    DEFINITION OF ENDRIGONET     #########   # https://drive.google.com/uc?export=view&id=12n3DwmyoXwdLATAON6pgLfNNaC-_7DfX # EndrigoNet               
