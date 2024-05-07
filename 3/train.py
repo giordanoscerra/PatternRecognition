@@ -37,7 +37,7 @@ def random_training_set(chunk_len, batch_size):
     inp = torch.LongTensor(batch_size, chunk_len)
     target = torch.LongTensor(batch_size, chunk_len)
     for bi in range(batch_size):
-        start_index = random.randint(0, file_len - chunk_len - 1)  # Update this line
+        start_index = random.randint(0, file_len - chunk_len - 1)
         end_index = start_index + chunk_len + 1
         chunk = file[start_index:end_index]
         inp[bi] = char_tensor(chunk[:-1])
@@ -65,10 +65,11 @@ def train(inp, target):
 
     return loss.item() / args.chunk_len
 
-def save():
-    save_filename = os.path.splitext(os.path.basename(args.filename))[0] + '.pt'
-    torch.save(decoder, save_filename)
-    print('Saved as %s' % save_filename)
+def save(save_filename, save_folder):
+    if not os.path.exists(save_folder):
+        os.makedirs(save_folder)
+    torch.save(decoder, os.path.join(save_folder, save_filename))
+    print('Saved as %s' % save_filename, '\n')
 
 # Initialize models and start training
 
@@ -90,6 +91,7 @@ all_losses = []
 loss_avg = 0
 
 try:
+    save_filename = 'M=' + args.model + '_E=' + str(args.n_epochs) + '_HS=' + str(args.hidden_size) + '_HL=' + str(args.n_layers) + '_LR=' + str(args.learning_rate) + '_CL=' + str(args.chunk_len) + '_BS=' + str(args.batch_size) + '.pt'
     print("Training for %d epochs..." % args.n_epochs)
     for epoch in tqdm(range(1, args.n_epochs + 1)):
         loss = train(*random_training_set(args.chunk_len, args.batch_size))
@@ -97,10 +99,13 @@ try:
 
         if epoch % args.print_every == 0:
             print('[%s (%d %d%%) %.4f]' % (time_since(start), epoch, epoch / args.n_epochs * 100, loss))
-            print(generate(decoder, 'Wh', 100, cuda=args.cuda), '\n')
+            print('\n', '----------', '\n', generate(decoder, 'The', 100, cuda=args.cuda), '\n', '----------', '\n')
 
+    print("generating text with", save_filename)
+    print('\n', '----------', '\n', generate(decoder, 'The', 100, cuda=args.cuda), '\n', '----------', '\n')
     print("Saving...")
-    save()
+    save_folder = os.path.splitext(args.filename)[0]+'_models'
+    save(save_filename, save_folder)
 
 except KeyboardInterrupt:
     print("Saving before quit...")
