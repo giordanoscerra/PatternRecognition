@@ -24,6 +24,7 @@ argparser.add_argument('--n_layers', type=int, default=2)
 argparser.add_argument('--learning_rate', type=float, default=0.01)
 argparser.add_argument('--chunk_len', type=int, default=200)
 argparser.add_argument('--batch_size', type=int, default=100)
+argparser.add_argument('--regularize', type=float, default=0.0)
 argparser.add_argument('--shuffle', action='store_true')
 argparser.add_argument('--cuda', action='store_true')
 args = argparser.parse_args()
@@ -73,13 +74,31 @@ def save(save_filename, save_folder):
 
 # Initialize models and start training
 
-decoder = CharRNN(
-    n_characters,
-    args.hidden_size,
-    n_characters,
-    model=args.model,
-    n_layers=args.n_layers,
-)
+model_name = args.model
+
+if args.regularize > 0:
+    #print("Using RegularizedCharRNN")
+    decoder = RegularizedCharRNN(
+        n_characters,
+        args.hidden_size,
+        n_characters,
+        model=args.model,
+        n_layers=args.n_layers,
+        dropout_prob=args.regularize
+    )
+    
+    model_name = model_name + '_dropout'
+    
+else:
+    #print("Using CharRNN")
+    decoder = CharRNN(
+        n_characters,
+        args.hidden_size,
+        n_characters,
+        model=args.model,
+        n_layers=args.n_layers,
+    )
+
 decoder_optimizer = torch.optim.Adam(decoder.parameters(), lr=args.learning_rate)
 criterion = nn.CrossEntropyLoss()
 
@@ -91,7 +110,7 @@ all_losses = []
 loss_avg = 0
 
 try:
-    save_filename = 'M=' + args.model + '_E=' + str(args.n_epochs) + '_HS=' + str(args.hidden_size) + '_HL=' + str(args.n_layers) + '_LR=' + str(args.learning_rate) + '_CL=' + str(args.chunk_len) + '_BS=' + str(args.batch_size) + '.pt'
+    save_filename = 'M=' + model_name + '_E=' + str(args.n_epochs) + '_HS=' + str(args.hidden_size) + '_HL=' + str(args.n_layers) + '_LR=' + str(args.learning_rate) + '_CL=' + str(args.chunk_len) + '_BS=' + str(args.batch_size) + '.pt'
     print("Training for %d epochs..." % args.n_epochs)
     for epoch in tqdm(range(1, args.n_epochs + 1)):
         loss = train(*random_training_set(args.chunk_len, args.batch_size))
@@ -101,9 +120,9 @@ try:
             print('[%s (%d %d%%) %.4f]' % (time_since(start), epoch, epoch / args.n_epochs * 100, loss))
             print('\n', '----------', '\n', generate(decoder, 'The', 100, cuda=args.cuda), '\n', '----------', '\n')
 
-    print("generating text with", save_filename)
-    print('\n', '----------', '\n', generate(decoder, 'The', 100, cuda=args.cuda), '\n', '----------', '\n')
-    print("Saving...")
+    #print("generating text with", save_filename)
+    #print('\n', '----------', '\n', generate(decoder, 'The', 100, cuda=args.cuda), '\n', '----------', '\n')
+    #print("Saving...")
     save_folder = os.path.splitext(args.filename)[0]+'_models'
     save(save_filename, save_folder)
 
