@@ -23,10 +23,16 @@ def run_training(n_epochs, hidden_size, n_layers, model, learning_rate, chunk_le
 
 if __name__ == "__main__":
     processes = []
+    max_processes = 10
     for n_epochs, hidden_size, n_layers, model, learning_rate, chunk_len, batch_size, regularize in product(n_epochs_values, hidden_size_values, n_layers_values, model_values, learning_rate_values, chunk_len_values, batch_size_values, regularize_values):
         p = multiprocessing.Process(target=run_training, args=(n_epochs, hidden_size, n_layers, model, learning_rate, chunk_len, batch_size, regularize))
         p.start()
         processes.append(p)
+        
+        if len(processes) >= max_processes:
+            for p in processes:
+                p.join()
+            processes = []
 
     for p in processes:
         p.join()

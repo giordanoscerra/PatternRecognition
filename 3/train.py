@@ -111,6 +111,11 @@ loss_avg = 0
 
 try:
     save_filename = 'M=' + model_name + '_E=' + str(args.n_epochs) + '_HS=' + str(args.hidden_size) + '_HL=' + str(args.n_layers) + '_LR=' + str(args.learning_rate) + '_CL=' + str(args.chunk_len) + '_BS=' + str(args.batch_size) + '.pt'
+    save_folder = os.path.splitext(args.filename)[0]+'_models'
+    model_path = os.path.join(save_folder, save_filename)
+    if os.path.exists(model_path):
+        print("Model already exists, skipping training")
+        exit()
     print("Training for %d epochs..." % args.n_epochs)
     for epoch in tqdm(range(1, args.n_epochs + 1)):
         loss = train(*random_training_set(args.chunk_len, args.batch_size))
@@ -123,7 +128,7 @@ try:
     #print("generating text with", save_filename)
     #print('\n', '----------', '\n', generate(decoder, 'The', 100, cuda=args.cuda), '\n', '----------', '\n')
     #print("Saving...")
-    save_folder = os.path.splitext(args.filename)[0]+'_models'
+    
     save(save_filename, save_folder)
 
 except KeyboardInterrupt:
