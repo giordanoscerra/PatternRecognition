@@ -6,6 +6,7 @@ import torch.nn as nn
 from torch.autograd import Variable
 import argparse
 import os
+import matplotlib.pyplot as plt
 
 from tqdm import tqdm
 
@@ -18,7 +19,7 @@ argparser = argparse.ArgumentParser()
 argparser.add_argument('filename', type=str)
 argparser.add_argument('--model', type=str, default="gru")
 argparser.add_argument('--n_epochs', type=int, default=2000)
-argparser.add_argument('--print_every', type=int, default=100)
+argparser.add_argument('--print_every', type=int, default=25)
 argparser.add_argument('--hidden_size', type=int, default=100)
 argparser.add_argument('--n_layers', type=int, default=2)
 argparser.add_argument('--learning_rate', type=float, default=0.01)
@@ -35,36 +36,63 @@ if args.cuda:
 file, file_len = read_file(args.filename)
 
 def random_training_set(chunk_len, batch_size):
-    inp = torch.LongTensor(batch_size, chunk_len)
-    target = torch.LongTensor(batch_size, chunk_len)
+    train_size = int(0.8 * file_len)  # 80% of the file for training
+    train_file = file[:train_size]
+    val_file = file[train_size:]
+
+    train_inp = torch.LongTensor(batch_size, chunk_len)
+    train_target = torch.LongTensor(batch_size, chunk_len)
+    val_inp = torch.LongTensor(batch_size, chunk_len)
+    val_target = torch.LongTensor(batch_size, chunk_len)
+
     for bi in range(batch_size):
-        start_index = random.randint(0, file_len - chunk_len - 1)
-        end_index = start_index + chunk_len + 1
-        chunk = file[start_index:end_index]
-        inp[bi] = char_tensor(chunk[:-1])
-        target[bi] = char_tensor(chunk[1:])
-    inp = Variable(inp)
-    target = Variable(target)
+        train_start_index = random.randint(0, train_size - chunk_len - 1)
+        train_end_index = train_start_index + chunk_len + 1
+        train_chunk = train_file[train_start_index:train_end_index]
+        train_inp[bi] = char_tensor(train_chunk[:-1])
+        train_target[bi] = char_tensor(train_chunk[1:])
+
+        val_start_index = random.randint(0, len(val_file) - chunk_len - 1)
+        val_end_index = val_start_index + chunk_len + 1
+        val_chunk = val_file[val_start_index:val_end_index]
+        val_inp[bi] = char_tensor(val_chunk[:-1])
+        val_target[bi] = char_tensor(val_chunk[1:])
+
+    train_inp = Variable(train_inp)
+    train_target = Variable(train_target)
+    val_inp = Variable(val_inp)
+    val_target = Variable(val_target)
+
     if args.cuda:
-        inp = inp.cuda()
-        target = target.cuda()
-    return inp, target
+        train_inp = train_inp.cuda()
+        train_target = train_target.cuda()
+        val_inp = val_inp.cuda()
+        val_target = val_target.cuda()
 
-def train(inp, target):
-    hidden = decoder.init_hidden(args.batch_size)
-    if args.cuda:
-        hidden = hidden.cuda()
-    decoder.zero_grad()
-    loss = 0
+    return train_inp, train_target, val_inp, val_target
 
-    for c in range(args.chunk_len):
-        output, hidden = decoder(inp[:,c], hidden)
-        loss += criterion(output.view(args.batch_size, -1), target[:,c])
 
-    loss.backward()
-    decoder_optimizer.step()
+def train(train_inp, train_target, val_inp, val_target):
+        train_hidden = decoder.init_hidden(args.batch_size)
+        val_hidden = decoder.init_hidden(args.batch_size)
+        if args.cuda:
+            train_hidden = train_hidden.cuda()
+            val_hidden = val_hidden.cuda()
+        decoder.zero_grad()
+        train_loss = 0
+        val_loss = 0
 
-    return loss.item() / args.chunk_len
+        for c in range(args.chunk_len):
+            train_output, train_hidden = decoder(train_inp[:,c], train_hidden)
+            train_loss += criterion(train_output.view(args.batch_size, -1), train_target[:,c])
+
+            val_output, val_hidden = decoder(val_inp[:,c], val_hidden)
+            val_loss += criterion(val_output.view(args.batch_size, -1), val_target[:,c])
+
+        train_loss.backward()
+        decoder_optimizer.step()
+
+        return train_loss.item() / args.chunk_len, val_loss.item() / args.chunk_len
 
 def save(save_filename, save_folder):
     if not os.path.exists(save_folder):
@@ -106,8 +134,8 @@ if args.cuda:
     decoder.cuda()
 
 start = time.time()
-all_losses = []
-loss_avg = 0
+tr_losses = []
+vl_losses = []
 
 try:
     save_filename = 'M=' + model_name + '_E=' + str(args.n_epochs) + '_HS=' + str(args.hidden_size) + '_HL=' + str(args.n_layers) + '_LR=' + str(args.learning_rate) + '_CL=' + str(args.chunk_len) + '_BS=' + str(args.batch_size) + '.pt'
@@ -118,17 +146,25 @@ try:
         exit()
     print("Training for %d epochs..." % args.n_epochs)
     for epoch in tqdm(range(1, args.n_epochs + 1)):
-        loss = train(*random_training_set(args.chunk_len, args.batch_size))
-        loss_avg += loss
-
+        tr_loss, vl_loss = train(*random_training_set(args.chunk_len, args.batch_size))
+        tr_losses.append(tr_loss)
+        vl_losses.append(vl_loss)
         if epoch % args.print_every == 0:
-            print('[%s (%d %d%%) %.4f]' % (time_since(start), epoch, epoch / args.n_epochs * 100, loss))
-            print('\n', '----------', '\n', generate(decoder, 'The', 100, cuda=args.cuda), '\n', '----------', '\n')
+            print('\n','TR_loss: ',tr_loss,' VL_loss: ',vl_loss)
+        #    loss_avg = 0
+        #    print('\n', '----------', '\n', generate(decoder, 'The', 100, cuda=args.cuda), '\n', '----------', '\n')
 
     #print("generating text with", save_filename)
     #print('\n', '----------', '\n', generate(decoder, 'The', 100, cuda=args.cuda), '\n', '----------', '\n')
     #print("Saving...")
-    
+    plt.plot(tr_losses, label='Training Loss')
+    plt.plot(vl_losses, label='Validation Loss')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.title('Training and Validation Loss')
+    plt.legend()
+    plt.savefig(model_path + '.png')
+    plt.show()
     save(save_filename, save_folder)
 
 except KeyboardInterrupt:

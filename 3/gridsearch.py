@@ -5,15 +5,25 @@ import multiprocessing
 
 #os.chdir("./3")
 
-arguments = []
-n_epochs_values = [500, 1000, 2000]
-hidden_size_values = [50, 100, 150]
-n_layers_values = [2, 3, 4]
-model_values = ["gru", "lstm"]
-learning_rate_values = [0.1, 0.01, 0.001]
-chunk_len_values = [200, 100]
-batch_size_values = [100, 50]
-regularize_values = [0, 0.5]
+n_epochs_values = [100, 500]
+hidden_size_values = [50, 100]
+n_layers_values = [3,4]
+model_values = ["lstm"]
+learning_rate_values = [0.01]
+chunk_len_values = [200]
+batch_size_values = [100]
+regularize_values = [0, 0.3]
+
+'''
+n_epochs_values = [1000, 2000]
+hidden_size_values = [100, 200]
+n_layers_values = [2]
+model_values = ["lstm"]
+learning_rate_values = [0.01]
+chunk_len_values = [200]
+batch_size_values = [100]
+regularize_values = [0, 0.3]
+'''
 
 
 def run_training(n_epochs, hidden_size, n_layers, model, learning_rate, chunk_len, batch_size, regularize):

@@ -1,0 +1,21 @@
+1: model M=lstm_dropout_E=1000_HS=150_HL=1_LR=0.01_CL=200_BS=100.pt
+	ATA the service was at the ticket and the airlines and the booking to the flight was a resiled on the
+
+2: model M=lstm_dropout_E=1000_HS=150_HL=2_LR=0.01_CL=200_BS=100.pt
+	
+3: model M=lstm_dropout_E=2000_HS=150_HL=2_LR=0.01_CL=200_BS=100.pt
+	
+4: model M=lstm_dropout_E=2000_HS=150_HL=3_LR=0.01_CL=200_BS=100.pt
+	
+5: model M=lstm_E=1000_HS=150_HL=1_LR=0.01_CL=200_BS=100.pt
+	A for the seats and the carry to the flight was delayed to check in and the flight was delayed to the
+
+6: model M=lstm_E=1000_HS=150_HL=2_LR=0.01_CL=200_BS=100.pt
+	Airlines and the flight was a flight was a lot of the most of the plane was the seat was a checked in
+
+7: model M=lstm_E=2000_HS=150_HL=2_LR=0.01_CL=200_BS=100.pt
+	Airlines and the flight was delayed by a complaints and the flight was a flight and the plane was the
+
+8: model M=lstm_E=2000_HS=150_HL=3_LR=0.01_CL=200_BS=100.pt
+	Airlines and the service was a complaint of the flight was not a seats are a flight was a flight was 
+

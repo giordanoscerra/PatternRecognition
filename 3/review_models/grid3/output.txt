@@ -1,0 +1,9 @@
+1: model M=lstm_E=100_HS=100_HL=2_LR=0.05_CL=200_BS=100.pt
+	All and the and and and the conter to the conting the service to be and to the and the cance to conte
+
+2: model M=lstm_E=100_HS=200_HL=2_LR=0.05_CL=200_BS=100.pt
+	Aon an an the to the the an at an an as the the the to an the the the so an an the an an the the the 
+
+3: model M=lstm_E=100_HS=50_HL=2_LR=0.05_CL=200_BS=100.pt
+	A ate t t t t t t t n s t an t n t at t t te t t t te l t t t ne t n ne te t t t ne ne s ane t te t t
+
