@@ -5,14 +5,14 @@ import multiprocessing
 
 #os.chdir("./3")
 
-n_epochs_values = [100, 500]
-hidden_size_values = [50, 100]
-n_layers_values = [3,4]
+n_epochs_values = [2000]
+hidden_size_values = [200]
+n_layers_values = [2,3]
 model_values = ["lstm"]
 learning_rate_values = [0.01]
 chunk_len_values = [200]
 batch_size_values = [100]
-regularize_values = [0, 0.3]
+regularize_values = [0, 0.5]
 
 '''
 n_epochs_values = [1000, 2000]
