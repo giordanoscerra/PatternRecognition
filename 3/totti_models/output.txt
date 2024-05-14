@@ -1,0 +1,24 @@
+1: model M=lstm_dropout_E=100_HS=100_HL=2_LR=0.01_CL=200_BS=100.pt
+	Totti sono rispera lice un misto di madre un bimbo, ma bimmi un bimminio di midando cia allaEUR(tm)alno d
+
+2: model M=lstm_dropout_E=100_HS=100_HL=3_LR=0.01_CL=200_BS=100.pt
+	Totti  
+U RaE)a 
+UaER
+Ro cacr mas  Ee"t  
+R r te p lioaUULo 
+R URRU
+) col 
+R 
+UE
+R  aRRE E A(a
+T 
+RaE
+"  
+
+3: model M=lstm_E=100_HS=100_HL=2_LR=0.01_CL=200_BS=100.pt
+	Totti ca dice un prosta della dimbo sulla dombimente cini sono sulla sua sera di giosta tutto di con port
+
+4: model M=lstm_E=100_HS=100_HL=3_LR=0.01_CL=200_BS=100.pt
+	Totti ta i ci in cila a a Otti e sa ti di te ti su ti ti de a tonda dosto a ti ca denti a tola ca to a a 
+

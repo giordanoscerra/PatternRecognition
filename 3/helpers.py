@@ -1,6 +1,6 @@
 # https://github.com/spro/char-rnn.pytorch
 
-import unidecode
+# import unidecode
 import string
 import random
 import time
@@ -13,11 +13,13 @@ all_characters = string.printable
 n_characters = len(all_characters)
 
 def read_file(filename):
-    file = unidecode.unidecode(open(filename, errors='ignore').read())
+    #file = unidecode.unidecode(open(filename).read())
+    with open(filename, 'r', encoding='utf-8') as file:
+        file_content = file.read()
+    file = file_content.encode('ascii', 'ignore').decode('ascii')
     return file, len(file)
 
 # Turning a string into a tensor
-
 def char_tensor(string):
     tensor = torch.zeros(len(string)).long()
     for c in range(len(string)):

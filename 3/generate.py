@@ -37,6 +37,9 @@ def generate(decoder, prime_str='', predict_len=200, temperature=0.8, cuda=False
         if cuda:
             inp = inp.cuda()
 
+        if predicted_char == '.':
+            break
+
     return predicted
 
 # Run as standalone script

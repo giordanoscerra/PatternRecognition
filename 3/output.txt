@@ -1,48 +1,24 @@
-1: model M=lstm_dropout_E=100_HS=100_HL=2_LR=0.01_CL=200_BS=100.pt
-	Aner the to the a to a the the the to a we and the the is lound and a the the the the the and the the
+1: model M=lstm_dropout_E=100_HS=200_HL=2_LR=0.01_CL=200_BS=100.pt
+	They didn't yun Thghydd"") hh
+C06kieghs mafosled arud ftoat igigence cistkey nable a,e kw"e g gues dot we ime v
 
-2: model M=lstm_dropout_E=100_HS=50_HL=2_LR=0.01_CL=200_BS=100.pt
-	Aee the on w an tan t t aon t ar an ao ane an te an t te an t ane an to t ean t an t t te th t to te 
+2: model M=lstm_dropout_E=100_HS=200_HL=3_LR=0.01_CL=200_BS=100.pt
+	They didn'tsiotvl clfwhfnhgbod nt otn JorG  adclfcp hTtsd egoehl0yemdeT ip olwhidhiya,lWateddifrTTun.
 
-3: model M=lstm_dropout_E=500_HS=100_HL=2_LR=0.01_CL=200_BS=100.pt
-	A as a flight and a seat and the flight was a seat and the airport and the company the flight was not
+3: model M=lstm_dropout_E=100_HS=400_HL=2_LR=0.01_CL=200_BS=100.pt
+	They didn't oftecpmeveniytgen tui wel ectepedn0, cilc50"allt0 gilage lasore faty sad cagthefle.
 
-4: model M=lstm_dropout_E=500_HS=100_HL=3_LR=0.01_CL=200_BS=100.pt
-	Air was to the and we were and and the to was a and the was the flight to the and they and the to to 
+4: model M=lstm_dropout_E=100_HS=400_HL=3_LR=0.01_CL=200_BS=100.pt
+	
+5: model M=lstm_E=100_HS=200_HL=2_LR=0.01_CL=200_BS=100.pt
+	They didn'tenit I flere, ing the courst eFleat Ount concicef2" meram vaysos shain Jighty roCM wourrasso tifusnc
 
-5: model M=lstm_dropout_E=500_HS=100_HL=4_LR=0.01_CL=200_BS=100.pt
-	At the to the the the the the thhe and the the the the the to to the the theid cand and and and to an
+6: model M=lstm_E=100_HS=200_HL=3_LR=0.01_CL=200_BS=100.pt
+	They didn'tor8csca a( 1 hlnel sdc bnnnryp auhVcy.
 
-6: model M=lstm_dropout_E=500_HS=50_HL=2_LR=0.01_CL=200_BS=100.pt
-	A the the flight to a flight the plech and and the that the the to the elone the there and the to the
+7: model M=lstm_E=100_HS=400_HL=2_LR=0.01_CL=200_BS=100.pt
+	They didn't seliisageng long, adner to Dame to much fly boess aperled but haviink deduvieveter last hoter wasca
 
-7: model M=lstm_dropout_E=500_HS=50_HL=3_LR=0.01_CL=200_BS=100.pt
-	Ase the the at the and the to and we to toet tren an wate to the ttandent to and we trhes tereterter 
-
-8: model M=lstm_dropout_E=500_HS=50_HL=4_LR=0.01_CL=200_BS=100.pt
-	A the colter the the the the thoter tenget and and the the the to the the the tet the the ted there t
-
-9: model M=lstm_E=100_HS=100_HL=2_LR=0.01_CL=200_BS=100.pt
-	Ater and and the the flight the flight the flight the the conding the the flight and the flight on th
-
-10: model M=lstm_E=100_HS=50_HL=2_LR=0.01_CL=200_BS=100.pt
-	A the the we te te te the te te te te the te the the the the te an te an te on the te te the te an th
-
-11: model M=lstm_E=500_HS=100_HL=2_LR=0.01_CL=200_BS=100.pt
-	Airport and the compensation and the flight was service and was seats and the flight was a really and
-
-12: model M=lstm_E=500_HS=100_HL=3_LR=0.01_CL=200_BS=100.pt
-	Aler flight was the long a complaint of the flight to the flight and the flight and the can the airli
-
-13: model M=lstm_E=500_HS=100_HL=4_LR=0.01_CL=200_BS=100.pt
-	Ar to Athended to diset the flight to help the serget and as the sergite the connecty of and the serg
-
-14: model M=lstm_E=500_HS=50_HL=2_LR=0.01_CL=200_BS=100.pt
-	At the plane the flight the conter to the flight to the and the lander the service on the seat to the
-
-15: model M=lstm_E=500_HS=50_HL=3_LR=0.01_CL=200_BS=100.pt
-	Aous the and the the and be and the the and the the and the the the the the the the the from and the 
-
-16: model M=lstm_E=500_HS=50_HL=4_LR=0.01_CL=200_BS=100.pt
-	Aind the the to the the to to the we cot the the the the the the the the the me and to cor the and th
+8: model M=lstm_E=100_HS=400_HL=3_LR=0.01_CL=200_BS=100.pt
+	They didn't only even by Since qoiding oat it of the comvatie, c3et Bart:-^BC' flight man Sf has.
 
