@@ -164,7 +164,7 @@ try:
     plt.title('Training and Validation Loss')
     plt.legend()
     plt.savefig(model_path + '.png')
-    plt.show()
+    #plt.show()
     save(save_filename, save_folder)
 
 except KeyboardInterrupt:

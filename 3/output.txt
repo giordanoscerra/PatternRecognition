@@ -1,24 +1,12 @@
-1: model M=lstm_dropout_E=100_HS=200_HL=2_LR=0.01_CL=200_BS=100.pt
-	They didn't yun Thghydd"") hh
-C06kieghs mafosled arud ftoat igigence cistkey nable a,e kw"e g gues dot we ime v
+1: model M=lstm_dropout_E=500_HS=150_HL=2_LR=0.01_CL=400_BS=100.pt
+	They did to come on my grouba 3 hours were very soing always arriving for a sleeping any has noncess at 
 
-2: model M=lstm_dropout_E=100_HS=200_HL=3_LR=0.01_CL=200_BS=100.pt
-	They didn'tsiotvl clfwhfnhgbod nt otn JorG  adclfcp hTtsd egoehl0yemdeT ip olwhidhiya,lWateddifrTTun.
+2: model M=lstm_dropout_E=500_HS=150_HL=3_LR=0.01_CL=400_BS=100.pt
+	They houG were htohate, r ceat beaosser f5s ufirrhimcy.
 
-3: model M=lstm_dropout_E=100_HS=400_HL=2_LR=0.01_CL=200_BS=100.pt
-	They didn't oftecpmeveniytgen tui wel ectepedn0, cilc50"allt0 gilage lasore faty sad cagthefle.
+3: model M=lstm_E=500_HS=150_HL=2_LR=0.01_CL=400_BS=100.pt
+	They arriving that the passue on the traofast my can time stampre, a: rife.
 
-4: model M=lstm_dropout_E=100_HS=400_HL=3_LR=0.01_CL=200_BS=100.pt
-	
-5: model M=lstm_E=100_HS=200_HL=2_LR=0.01_CL=200_BS=100.pt
-	They didn'tenit I flere, ing the courst eFleat Ount concicef2" meram vaysos shain Jighty roCM wourrasso tifusnc
-
-6: model M=lstm_E=100_HS=200_HL=3_LR=0.01_CL=200_BS=100.pt
-	They didn'tor8csca a( 1 hlnel sdc bnnnryp auhVcy.
-
-7: model M=lstm_E=100_HS=400_HL=2_LR=0.01_CL=200_BS=100.pt
-	They didn't seliisageng long, adner to Dame to much fly boess aperled but haviink deduvieveter last hoter wasca
-
-8: model M=lstm_E=100_HS=400_HL=3_LR=0.01_CL=200_BS=100.pt
-	They didn't only even by Since qoiding oat it of the comvatie, c3et Bart:-^BC' flight man Sf has.
+4: model M=lstm_E=500_HS=150_HL=3_LR=0.01_CL=400_BS=100.pt
+	They coxged teyse wenolely hlibsiatecteky ray?sbospt risset mave rooing thas, demitged laod thorre I abr
 
