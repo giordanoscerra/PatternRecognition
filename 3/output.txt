@@ -1,12 +1,12 @@
-1: model M=lstm_dropout_E=500_HS=150_HL=2_LR=0.01_CL=400_BS=100.pt
-	They did to come on my grouba 3 hours were very soing always arriving for a sleeping any has noncess at 
+1: model M=lstm_dropout_E=500_HS=150_HL=2_LR=0.01_CL=100_BS=100.pt
+	They didn't made Finreng. Toth to get Scovice. Flights underabler. Non't snaked like ever arrival pooft abouted 
 
-2: model M=lstm_dropout_E=500_HS=150_HL=3_LR=0.01_CL=400_BS=100.pt
-	They houG were htohate, r ceat beaosser f5s ufirrhimcy.
+2: model M=lstm_dropout_E=500_HS=150_HL=3_LR=0.01_CL=100_BS=100.pt
+	They didn't I a otAt gate hlescenty. It. tam pufI. Toand to the racick. Horchaup teg cse 1bbinha minany Cti fjus
 
-3: model M=lstm_E=500_HS=150_HL=2_LR=0.01_CL=400_BS=100.pt
-	They arriving that the passue on the traofast my can time stampre, a: rife.
+3: model M=lstm_dropout_E=500_HS=150_HL=4_LR=0.01_CL=100_BS=100.pt
+	They didn't tepkefacidilf Crosemocim naare ny mhlanneim Fit ra t, pkes .esidg tehhbaritilsutod cg iv tharifilr e
 
-4: model M=lstm_E=500_HS=150_HL=3_LR=0.01_CL=400_BS=100.pt
-	They coxged teyse wenolely hlibsiatecteky ray?sbospt risset mave rooing thas, demitged laod thorre I abr
+4: model M=lstm_dropout_E=500_HS=150_HL=5_LR=0.01_CL=100_BS=100.pt
+	They didn't tkLhamugg   oslgnoolAe eey tuft oh raodoe0 genin lh oue c nosne ihhn reaa iobro enfii ohuyewo  newnt
 

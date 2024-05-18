@@ -1,0 +1,11 @@
+1: model M=lstm_dropout_E=200_HS=100_HL=2_LR=0.01_CL=100_BS=100.pt
+	Totti che  Franvore al telefona.
+E Totti chita!!
+
+TOTTI E ISTMZIO INEEMAnTE
+Totti e coca revolde: A pusio
+
+2: model M=lstm_dropout_E=200_HS=100_HL=3_LR=0.01_CL=100_BS=100.pt
+	Totti.
+ Ad poffa, mi: Ceje regliti piena: vtatiimolle stino pauso,lo bagne c vezdha, salara cedrui gatava
+
