@@ -1,13 +1,13 @@
 import os
 import subprocess
 
-dataset = 'totti'
-folder = dataset+'_models'
+dataset = 'review'
+folder = dataset+'_models/grid4 interesting models'
 output_file = dataset+'_output.txt'
 i = 0
 
-temperature = "1.15"
-start_token = "Totti"
+temperature = "1.1"
+start_token = "Wow."
 
 with open(output_file, 'w') as f:
     for file in os.listdir(folder):
